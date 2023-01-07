@@ -23,9 +23,10 @@ def prepare_data(filename,
     if mixed_types != None and dtypes == None:
         print('please specify the dtypes for the columns of mixed types')
         return
-    
+        
     df = pd.read_csv(filename, usecols=cols)
-    df = remove_na(df,mixed_types,dtypes)
+    if mixed_types != None:
+        df = remove_na(df,mixed_types,dtypes)
 
     if clean_data != None:
         df = clean_data(df)
