@@ -21,7 +21,9 @@ combinations = [
 ]
 
 def cleanData(df):
-    df['flightDate'] = df['flightDate'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
+    #df['flightDate'] = df['flightDate'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
+    df = df.drop(df[df['baseFare'] > 500].index)
+    df = df.drop(df[df['totalFare'] > 500].index)
     return df
 
 if __name__ == '__main__':
@@ -32,7 +34,15 @@ if __name__ == '__main__':
                         cols=useful_cols,
                         clean_data=lambda df: cleanData(df)
                         )
-
+    
+    visualize_data(
+            df,
+            x_variable='baseFare',
+            y_variable='totalFare',
+            x_is_date=False,
+            savepath='./visualizations/flight_prices/baseFare_under500_vs_totalFare_under500'
+        )
+"""
     for comb in combinations:
         outpath=f'./visualizations/flight_prices/{comb[0]}_vs_{comb[1]}.png'
 
@@ -43,3 +53,4 @@ if __name__ == '__main__':
             x_is_date=comb[0] == 'flightDate',
             savepath=outpath
         )
+        """

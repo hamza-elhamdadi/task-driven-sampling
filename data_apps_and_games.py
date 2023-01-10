@@ -26,9 +26,11 @@ monthNum = {
 }
 
 def cleanData(df):
-        df['releasedDate'] = df.apply(lambda row: f'{row["releasedDay"]}-{monthNum[row["releasedMonth"]]}-{row["releasedYear"]}', axis=1)
-        df.drop(['releasedDay','releasedMonth','releasedYear'],axis=1,inplace=True)
-        df['releasedDate'] = df['releasedDate'].apply(lambda x: datetime.strptime(x, '%d-%m-%Y'))
+        df = df.drop(df[df['price'] > 20].index)
+        df = df.drop(df[df['minInstalls'] > 7e5].index)
+        #df['releasedDate'] = df.apply(lambda row: f'{row["releasedDay"]}-{monthNum[row["releasedMonth"]]}-{row["releasedYear"]}', axis=1)
+        #df.drop(['releasedDay','releasedMonth','releasedYear'],axis=1,inplace=True)
+        #df['releasedDate'] = df['releasedDate'].apply(lambda x: datetime.strptime(x, '%d-%m-%Y'))
         df = df.loc[df['price'] != 0.0]
         return df
 
@@ -41,9 +43,18 @@ if __name__ == '__main__':
                         cols=useful_cols,
                         clean_data=lambda df: cleanData(df)
                         )
-    
-    print(df.head())
 
+    print(df.shape)
+
+    visualize_data(df,
+                    x_variable='price',
+                    y_variable='ratings',
+                    x_is_date=False,#True if comb[0] == 'releasedDate' else False,
+                    savepath='./visualizations/apps_and_games/price_under20_vs_minInstalls_under2e6.png')
+
+    #print(df.head())
+
+"""
     for comb in combinations:
         outpath=f'./visualizations/apps_and_games/{comb[0]}_vs_{comb[1]}.png'
 
@@ -52,3 +63,4 @@ if __name__ == '__main__':
                         y_variable=comb[1],
                         x_is_date=True if comb[0] == 'releasedDate' else False,
                         savepath=outpath)
+"""

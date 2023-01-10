@@ -9,9 +9,10 @@ combinations = [
 ]
 
 def cleanData(df):
-    df['date'] = df['trans_date_trans_time'].apply(lambda row: row.split(' ')[0])
-    df.drop('trans_date_trans_time',axis=1,inplace=True)
-    df['date'] = df['date'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
+    #df['date'] = df['trans_date_trans_time'].apply(lambda row: row.split(' ')[0])
+    #df.drop('trans_date_trans_time',axis=1,inplace=True)
+    #df['date'] = df['date'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
+    df = df.drop(df[df['city_pop'] > 500000].index)
     return df
 
 if __name__ == '__main__':
@@ -22,7 +23,15 @@ if __name__ == '__main__':
                         cols=useful_cols,
                         clean_data=lambda df: cleanData(df)
                         )
-
+    
+    visualize_data(
+        df,
+        x_variable='city_pop',
+        y_variable='amt',
+        x_is_date=False,
+        savepath='./visualizations/credit_card_fraud/city_pop_lessthan500000_vs_amt.png'
+    )
+"""
     for comb in combinations:
         outpath=f'./visualizations/credit_card_fraud/{comb[0]}_vs_{comb[1]}.png'
 
@@ -32,4 +41,4 @@ if __name__ == '__main__':
             y_variable=comb[1],
             x_is_date=comb[0] == 'date',
             savepath=outpath
-        )
+        )"""
