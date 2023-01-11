@@ -26,11 +26,11 @@ monthNum = {
 }
 
 def cleanData(df):
-        df = df.drop(df[df['price'] > 20].index)
-        df = df.drop(df[df['minInstalls'] > 7e5].index)
-        #df['releasedDate'] = df.apply(lambda row: f'{row["releasedDay"]}-{monthNum[row["releasedMonth"]]}-{row["releasedYear"]}', axis=1)
-        #df.drop(['releasedDay','releasedMonth','releasedYear'],axis=1,inplace=True)
-        #df['releasedDate'] = df['releasedDate'].apply(lambda x: datetime.strptime(x, '%d-%m-%Y'))
+        #df = df.drop(df[df['price'] > 20].index)
+        #df = df.drop(df[df['minInstalls'] > 7e5].index)
+        df['releasedDate'] = df.apply(lambda row: f'{row["releasedDay"]}-{monthNum[row["releasedMonth"]]}-{row["releasedYear"]}', axis=1)
+        df.drop(['releasedDay','releasedMonth','releasedYear'],axis=1,inplace=True)
+        df['releasedDate'] = df['releasedDate'].apply(lambda x: datetime.strptime(x, '%d-%m-%Y'))
         df = df.loc[df['price'] != 0.0]
         return df
 
@@ -43,9 +43,9 @@ if __name__ == '__main__':
                         cols=useful_cols,
                         clean_data=lambda df: cleanData(df)
                         )
-
-    print(df.shape)
-
+    df.to_csv('./data/apps_and_games/apps.csv',index=False)
+   
+"""
     visualize_data(df,
                     x_variable='price',
                     y_variable='ratings',
@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
     #print(df.head())
 
-"""
+
     for comb in combinations:
         outpath=f'./visualizations/apps_and_games/{comb[0]}_vs_{comb[1]}.png'
 
