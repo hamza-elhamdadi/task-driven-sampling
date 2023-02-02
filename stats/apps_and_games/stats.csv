@@ -1,7 +1,13 @@
 x_vs_y,correlation
-releasedDate_vs_minInstalls,-0.044496117459597154
-releasedDate_vs_ratings,-0.02502025872914614
-releasedDate_vs_price,0.05901973200179333
-price_vs_ratings,-0.0009085110647591035
-price_vs_minInstalls,-0.004114498144399107
-price_vs_ratings,-0.0009085110647591035
+releasedDate_vs_minInstalls,"[[ 1.         -0.04449612]
+ [-0.04449612  1.        ]]"
+releasedDate_vs_ratings,"[[ 1.         -0.02502026]
+ [-0.02502026  1.        ]]"
+releasedDate_vs_price,"[[1.         0.05901973]
+ [0.05901973 1.        ]]"
+price_vs_ratings,"[[ 1.00000000e+00 -9.08511065e-04]
+ [-9.08511065e-04  1.00000000e+00]]"
+price_vs_minInstalls,"[[ 1.        -0.0041145]
+ [-0.0041145  1.       ]]"
+price_vs_ratings,"[[ 1.00000000e+00 -9.08511065e-04]
+ [-9.08511065e-04  1.00000000e+00]]"

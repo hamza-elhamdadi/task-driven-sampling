@@ -1,3 +1,5 @@
+import numpy as np
+
 def create_dict(l): #create a dictionary for elements in l
     idx = [i for i in range(0, len(l))]
     zobj = zip(l, idx)

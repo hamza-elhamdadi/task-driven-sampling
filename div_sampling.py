@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 
 def create_dict(l): #create a dictionary for elements in l

@@ -1,10 +1,8 @@
 from visualize_data import prepare_data
 from datetime import datetime
-import os, pandas as pd
+import pandas as pd, numpy as np
 
-datapath = './data/'
-dataset_dirs = [os.path.join(datapath,e) for e in os.listdir(datapath) if e not in ['.DS_Store','pollution','raw_data','credit_card_fraud']]
-dataset_files = list(sorted([os.path.join(e, os.listdir(e)[0]) for e in dataset_dirs]))
+datasets = ['apps_and_games', 'credit_card_fraud', 'fashion', 'flight_prices']
 
 combinations = {
     'fashion': [
@@ -34,8 +32,7 @@ combinations = {
         ['releasedDate','ratings'],
         ['releasedDate','price'],
         ['price','ratings'],
-        ['price','minInstalls'],
-        ['price','ratings']
+        ['price','minInstalls']
     ],
     'credit_card_fraud': [
         ['date','amt'],
@@ -49,16 +46,32 @@ def clean(df, dataset):
         df['date_stored'] = df['date_stored'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
     elif(dataset == 'apps_and_games'):
         df['releasedDate'] = df['releasedDate'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
+        df = df.drop(df[df['price'] > 20].index)
     elif(dataset == 'credit_card_fraud'):
         df['date'] = df['date'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
     elif(dataset == 'flight_prices'):
         df['flightDate'] = df['flightDate'].apply(lambda x: datetime.strptime(x, '%Y-%m-%d'))
     return df
 
+def dfile(dset):
+    return f'./data/{dataset}/{dataset}.csv'
+
 if __name__ == '__main__':
+    dataset = datasets[1]
+    df = prepare_data(dfile(dataset), clean_data=lambda df: clean(df,dataset))
+    print(df.head())
+
+if __name__ == '__main__2':
     #for f in dataset_files:
-    dataset, xvy, correlations = 'flight_prices', [], []
-    df = prepare_data('./data/raw_data/itineraries.csv',clean_data=lambda df: clean(df,dataset))
+    dataset, xvy, correlations = 'apps_and_games', [], []
+    dfs = []
+    i = 1
+    #for chunk in pd.read_csv('./data/flight_prices/flight_prices.csv',chunksize=10**6):
+    #    dfs.append(chunk)
+    #    print(f'chunk {i} finished')
+    #    i += 1
+    #df = pd.concat(dfs)
+    df = prepare_data(f'./data/{dataset}/{dataset}.csv',clean_data=lambda df: clean(df,dataset))
     print('data loaded')
     for column in df:
         if 'date' in column.lower():
@@ -66,8 +79,8 @@ if __name__ == '__main__':
     print('dates fixed')
     for x,y in combinations[dataset]:
         xvy.append(f'{x}_vs_{y}')
-        correlations.append(df[x].corr(df[y]))
+        correlations.append(np.corrcoef(df[x],df[y])[0,1])
         print(x,y)
     stats_df = pd.DataFrame({'x_vs_y': xvy, 'correlation': correlations})
-    stats_df.to_csv(f'./stats/{dataset}/stats.csv',index=False)
+    stats_df.to_csv(f'./stats/{dataset}/stats3.csv',index=False)
     #print(list(map(lambda x: x.split('/')[2],dataset_files)))
