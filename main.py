@@ -1,8 +1,12 @@
-from visualize_data import prepare_data
+from visualize_data import prepare_data, visualize_data
 from datetime import datetime
-import pandas as pd, numpy as np
+import pandas as pd, numpy as np, random
+from math import floor
 
 datasets = ['apps_and_games', 'credit_card_fraud', 'fashion', 'flight_prices']
+
+slopes = [random.randrange(20,80)/100 for i in range(100)]
+# print(slopes)
 
 combinations = {
     'fashion': [
@@ -56,10 +60,32 @@ def clean(df, dataset):
 def dfile(dset):
     return f'./data/{dataset}/{dataset}.csv'
 
+
+def adjust_corr(x,y,max):
+    # p, m, b  = pmb_vals[]
+    m  = slopes[floor(x/max*len(slopes))]
+    extent = 100
+    return m*x+random.randrange(-extent,extent)*y #if random.random() <= p else y
+
 if __name__ == '__main__':
-    dataset = datasets[1]
+    dataset, x, y = datasets[1], 'adjusted_pop', 'adjusted_amt'
     df = prepare_data(dfile(dataset), clean_data=lambda df: clean(df,dataset))
-    print(df.head())
+    visualize_data(df, x_variable=x, y_variable=y)
+
+if __name__ == '__main__2':
+    dataset = datasets[1]
+    x, y = 'adjusted_pop', 'adjusted_amt'
+    df = prepare_data(dfile(dataset), clean_data=lambda df: clean(df,dataset))
+    df['adjusted_pop'] = df.apply(lambda row: row['city_pop']+random.randrange(1e4)*40, axis=1)
+    max_pop = df.max()[x]
+    df[y] = df.apply(lambda row: adjust_corr(row[x],row['amt'], max_pop+1), axis=1)
+    print(df[x].corr(df[y]))
+    df.to_csv(f'./data/{dataset}/{dataset}.csv', index=False)
+    # visualize_data(
+    #     df,
+    #     x_variable=x,
+    #     y_variable=y
+    # )
 
 if __name__ == '__main__2':
     #for f in dataset_files:
